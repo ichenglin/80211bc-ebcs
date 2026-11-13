@@ -4,18 +4,16 @@ from scapy.all import (
     BitEnumField,
     BitField,
     ConditionalField,
-    Dot11Action,
     Field,
     FieldLenField,
     IntField,
     Packet,
     StrLenField,
-    XByteField,
     bind_layers,
 )
 
-from constants.dot11 import ActionCategory
 from constants.dot11bc import ActionValue, FrameSignatureType
+from packets.base import BcBase
 
 FRAME_SIGNATURE_TYPES = {
     signature_type.value: signature_type.name
@@ -35,11 +33,9 @@ class FrameCountField(Field):
         return int.from_bytes(value, "big")
 
 
-class Dot11Bc(Packet):
+class BcUplink(BcBase):
     """
     Attributes:
-        action:                  The specific action value  (e.g. uplink, info, termination)
-
         sta_certificate_present: Indicates if the STA certificate         is present
         frame_tx_time_present:   Indicates if the frame transmission time is present
         frame_count_present:     Indicates if the frame count             is present
@@ -55,9 +51,7 @@ class Dot11Bc(Packet):
 
     name = "EBCS Frame"
     fields_desc: ClassVar[list] = [
-        XByteField("action", ActionValue.EBCS_UPLINK),
-
-        # control field
+        # control fields
         BitField    ("sta_certificate_present", 0, 1),
         BitField    ("frame_tx_time_present",   0, 1),
         BitField    ("frame_count_present",     0, 1),
@@ -104,4 +98,4 @@ class Dot11Bc(Packet):
         ),
     ]
 
-bind_layers(Dot11Action, Dot11Bc, category=ActionCategory.PUBLIC)
+bind_layers(BcBase, BcUplink, action=ActionValue.EBCS_UPLINK)

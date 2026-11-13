@@ -4,7 +4,8 @@ from dotenv import load_dotenv
 from scapy.all import Dot11, Dot11Action, RadioTap, sendp
 
 from constants.dot11 import ActionCategory, Dot11Type, ManagementSubtype
-from packets.dot11bc import Dot11Bc
+from packets.base import BcBase
+from packets.uplink import BcUplink
 
 load_dotenv()
 
@@ -19,7 +20,8 @@ def device_main() -> None:
             addr3  ="01:0f:ac:01:02:03"      # EBCS content mac address
         ) /
         Dot11Action(category=ActionCategory.PUBLIC) /
-        Dot11Bc(
+        BcBase() /
+        BcUplink(
             uri                  =b"http://example.com",
             hlp_payload          =b"Hello World!",
             frame_tx_time_present=1,
