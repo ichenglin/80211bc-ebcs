@@ -22,11 +22,11 @@ class ActionValue(IntEnum):
     EBCS_TERMINATION = 0x35
 
 class FrameSignatureType(IntEnum):
-    HLSA = 0
+    HLSA            = 0
     RSASSA_PSS_2048 = 1
     RSASSA_PSS_4096 = 2
-    ECDSA_P256 = 3
-    ECDSA_P521 = 4
+    ECDSA_P256      = 3
+    ECDSA_P521      = 4
 
 FRAME_SIGNATURE_TYPES = {
     signature_type.value: signature_type.name
