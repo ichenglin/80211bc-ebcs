@@ -19,7 +19,9 @@ def device_main() -> None:
         ) /
         Dot11Bc(
             uri=b"http://example.com",
-            hlp_payload=b"Hello World!"
+            hlp_payload=b"Hello World!",
+            frame_tx_time_present=1,
+            frame_tx_time=0x01020304
         )
     )
 

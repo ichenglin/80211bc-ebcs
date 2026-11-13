@@ -4,8 +4,11 @@ from typing import ClassVar
 from scapy.all import (
     BitEnumField,
     BitField,
+    ConditionalField,
     Dot11,
+    Field,
     FieldLenField,
+    IntField,
     Packet,
     StrLenField,
     XByteField,
@@ -33,6 +36,20 @@ FRAME_SIGNATURE_TYPES = {
     for signature_type in FrameSignatureType
 }
 
+
+class FrameCountField(Field):
+    """A six-octet, big-endian unsigned frame count."""
+
+    def __init__(self, name: str, default: int = 0) -> None:
+        super().__init__(name, default, "!6s")
+
+    def i2m(self, pkt: Packet, value: int | None) -> bytes:
+        return int(value or 0).to_bytes(6, "big")
+
+    def m2i(self, pkt: Packet, value: bytes) -> int:
+        return int.from_bytes(value, "big")
+
+
 class Dot11Bc(Packet):
     """
     Attributes:
@@ -46,6 +63,10 @@ class Dot11Bc(Packet):
 
         uri:                     The destination URI
         hlp_payload:             The HLP payload
+        sta_certificate:         The optional STA certificate container
+        frame_tx_time:           The optional frame transmission time
+        frame_count:             The optional frame count
+        frame_signature:         The optional frame signature
     """
 
     name = "EBCS Frame"
@@ -64,7 +85,40 @@ class Dot11Bc(Packet):
         StrLenField  ("uri", b"http://example.com", length_from=lambda pkt: pkt.uri_len),
         
         FieldLenField("payload_len", None, length_of="hlp_payload", fmt="H"),
-        StrLenField  ("hlp_payload", b"", length_from=lambda pkt: pkt.payload_len)
+        StrLenField  ("hlp_payload", b"", length_from=lambda pkt: pkt.payload_len),
+
+        ConditionalField(
+            FieldLenField("sta_certificate_len", None, length_of="sta_certificate", fmt="H"),
+            lambda pkt: pkt.sta_certificate_present == 1,
+        ),
+        ConditionalField(
+            StrLenField(
+                "sta_certificate",
+                b"",
+                length_from=lambda pkt: pkt.sta_certificate_len,
+            ),
+            lambda pkt: pkt.sta_certificate_present == 1,
+        ),
+        ConditionalField(
+            IntField("frame_tx_time", 0),
+            lambda pkt: pkt.frame_tx_time_present == 1,
+        ),
+        ConditionalField(
+            FrameCountField("frame_count", 0),
+            lambda pkt: pkt.frame_count_present == 1,
+        ),
+        ConditionalField(
+            FieldLenField("frame_signature_len", None, length_of="frame_signature", fmt="H"),
+            lambda pkt: pkt.frame_signature_type != FrameSignatureType.HLSA,
+        ),
+        ConditionalField(
+            StrLenField(
+                "frame_signature",
+                b"",
+                length_from=lambda pkt: pkt.frame_signature_len,
+            ),
+            lambda pkt: pkt.frame_signature_type != FrameSignatureType.HLSA,
+        ),
     ]
 
 bind_layers(Dot11, Dot11Bc, type=0, subtype=13)
