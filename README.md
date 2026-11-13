@@ -18,3 +18,9 @@ Adjust the interface mode and channel:
 ```bash
 sudo bin/intf.sh -i <interface> [-m <monitor|managed>] [-c <channel>]
 ```
+
+## Run Device/Station
+
+```bash
+.venv/bin/python -m <src.device|src.station>
+```
