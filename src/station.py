@@ -18,6 +18,16 @@ def station_sniff(packet: Packet) -> None:
         print(f"    - Action: {ebcs.action}")
         print(f"    - URI: {ebcs.uri.decode('utf-8', errors='ignore')}")
         print(f"    - Payload: {ebcs.hlp_payload}")
+        
+        if ebcs.sta_certificate_present:
+            print(f"    - STA Certificate: {ebcs.sta_certificate}")
+        if ebcs.frame_tx_time_present:
+            print(f"    - Frame Tx Time: {ebcs.frame_tx_time}")
+        if ebcs.frame_count_present:
+            print(f"    - Frame Count: {ebcs.frame_count}")
+        if ebcs.frame_signature_type:
+            print(f"    - Frame Signature Type: {ebcs.frame_signature_type}")
+            print(f"    - Frame Signature: {ebcs.frame_signature}")
 
 if __name__ == "__main__":
     station_main()
