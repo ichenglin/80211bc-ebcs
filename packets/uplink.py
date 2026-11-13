@@ -12,7 +12,8 @@ from scapy.all import (
     bind_layers,
 )
 
-from constants.dot11bc import ActionValue, FrameSignatureType
+from constants.base import ActionValue
+from constants.uplink import FrameSignatureType
 from packets.base import BcBase
 
 FRAME_SIGNATURE_TYPES = {

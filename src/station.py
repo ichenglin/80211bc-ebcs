@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 from scapy.all import Dot11, Packet, sniff
 
-from constants.dot11bc import ActionValue
+from constants.base import ActionValue
 from packets.base import BcBase
 from packets.uplink import BcUplink
 
