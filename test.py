@@ -1,6 +1,11 @@
+import os
+
+from dotenv import load_dotenv
 from scapy.all import Dot11, RadioTap, sendp
 
 from packets.dot11bc import Dot11Bc
+
+load_dotenv()
 
 frame = (
     RadioTap() / 
@@ -18,4 +23,4 @@ frame = (
 )
 
 frame.show()
-sendp(frame, iface="wlan0", verbose=False)
+sendp(frame, iface=os.getenv("INTERFACE"), verbose=False)
