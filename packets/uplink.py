@@ -50,7 +50,7 @@ class BcUplink(BcBase):
         frame_signature:         The optional frame signature
     """
 
-    name = "EBCS Frame"
+    name = "EBCS Uplink"
     fields_desc: ClassVar[list] = [
         # control fields
         BitField    ("sta_certificate_present", 0, 1),

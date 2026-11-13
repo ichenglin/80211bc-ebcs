@@ -14,7 +14,7 @@ def station_main() -> None:
     sniff(iface=os.getenv("STATION_INTERFACE"), prn=station_sniff, store=0)
 
 def station_sniff(packet: Packet) -> None:
-    if packet.haslayer(BcUplink):
+    if packet.haslayer(BcBase):
         dot11  = packet[Dot11]
         base   = packet[BcBase]
         uplink = packet[BcUplink]
@@ -31,7 +31,7 @@ def station_sniff(packet: Packet) -> None:
 def station_report(name: str, value: str, condition: bool) -> None:
     if (not condition):
         return
-    print(f"\t- {name:<20}: {value}")
+    print(f"{' ' * 4}- {name:<20}: {value}")
 
 if __name__ == "__main__":
     station_main()
