@@ -15,9 +15,8 @@ from scapy.all import (
     bind_layers,
 )
 
+from packets.dot11 import ActionCategory
 
-class ActionCategory(IntEnum):
-    PUBLIC = 0x04
 
 class ActionValue(IntEnum):
     EBCS_UPLINK      = 0x33
