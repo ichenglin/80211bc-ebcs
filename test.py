@@ -1,6 +1,6 @@
 from scapy.all import Dot11, RadioTap, sendp
 
-from packets.ebcs import EbcsUL
+from packets.dot11bc import Dot11Bc
 
 frame = (
     RadioTap() / 
@@ -11,8 +11,7 @@ frame = (
         addr2="00:11:22:33:44:55", # sender STA mac
         addr3="01:0f:ac:01:02:03"  # EBCS content mac address
     ) / 
-    EbcsUL(
-        control=0x00,
+    Dot11Bc(
         uri=b"http://example.com",
         hlp_payload=b"Hello World!"
     )
