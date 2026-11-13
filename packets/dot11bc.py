@@ -1,4 +1,3 @@
-from enum import IntEnum
 from typing import ClassVar
 
 from scapy.all import (
@@ -15,26 +14,13 @@ from scapy.all import (
     bind_layers,
 )
 
-from packets.dot11 import ActionCategory
-
-
-class ActionValue(IntEnum):
-    EBCS_UPLINK      = 0x33
-    EBCS_INFO        = 0x34
-    EBCS_TERMINATION = 0x35
-
-class FrameSignatureType(IntEnum):
-    HLSA            = 0x0
-    RSASSA_PSS_2048 = 0x1
-    RSASSA_PSS_4096 = 0x2
-    ECDSA_P256      = 0x3
-    ECDSA_P521      = 0x4
+from constants.dot11 import ActionCategory
+from constants.dot11bc import ActionValue, FrameSignatureType
 
 FRAME_SIGNATURE_TYPES = {
     signature_type.value: signature_type.name
     for signature_type in FrameSignatureType
 }
-
 
 class FrameCountField(Field):
     """A six-octet, big-endian unsigned frame count."""
