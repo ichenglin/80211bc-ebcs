@@ -5,7 +5,7 @@ from scapy.all import (
     BitEnumField,
     BitField,
     ConditionalField,
-    Dot11,
+    Dot11Action,
     Field,
     FieldLenField,
     IntField,
@@ -53,7 +53,6 @@ class FrameCountField(Field):
 class Dot11Bc(Packet):
     """
     Attributes:
-        category:                The category of the action (usually PUBLIC)
         action:                  The specific action value  (e.g. uplink, info, termination)
 
         sta_certificate_present: Indicates if the STA certificate         is present
@@ -71,8 +70,7 @@ class Dot11Bc(Packet):
 
     name = "EBCS Frame"
     fields_desc: ClassVar[list] = [
-        XByteField("category", ActionCategory.PUBLIC),
-        XByteField("action",   ActionValue.EBCS_UPLINK),
+        XByteField("action", ActionValue.EBCS_UPLINK),
 
         # control field
         BitField    ("sta_certificate_present", 0, 1),
@@ -121,4 +119,4 @@ class Dot11Bc(Packet):
         ),
     ]
 
-bind_layers(Dot11, Dot11Bc, type=0, subtype=13)
+bind_layers(Dot11Action, Dot11Bc, category=ActionCategory.PUBLIC)

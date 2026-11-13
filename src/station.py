@@ -15,11 +15,9 @@ def station_sniff(packet: Packet) -> None:
     if packet.haslayer(Dot11Bc):
         ebcs = packet[Dot11Bc]
         print(f"\n[+] Captured EBCS Frame from MAC: {packet[Dot11].addr2}")
-        print(f"    - Category: {ebcs.category}")
         print(f"    - Action: {ebcs.action}")
         print(f"    - URI: {ebcs.uri.decode('utf-8', errors='ignore')}")
         print(f"    - Payload: {ebcs.hlp_payload}")
-        ebcs.show()
 
 if __name__ == "__main__":
     station_main()
