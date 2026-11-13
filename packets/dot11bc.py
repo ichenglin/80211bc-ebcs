@@ -22,7 +22,11 @@ class ActionValue(IntEnum):
     EBCS_TERMINATION = 0x35
 
 class FrameSignatureType(IntEnum):
-    UNSPECIFIED = 0
+    HLSA = 0
+    RSASSA_PSS_2048 = 1
+    RSASSA_PSS_4096 = 2
+    ECDSA_P256 = 3
+    ECDSA_P521 = 4
 
 FRAME_SIGNATURE_TYPES = {
     signature_type.value: signature_type.name
@@ -41,7 +45,7 @@ class Dot11Bc(Packet):
         frame_signature_type:    The type of frame signature
 
         uri:                     The destination URI
-        hlp_payload:                 The HLP payload
+        hlp_payload:             The HLP payload
     """
 
     name = "EBCS Frame"
@@ -53,7 +57,7 @@ class Dot11Bc(Packet):
         BitField    ("sta_certificate_present", 0, 1),
         BitField    ("frame_tx_time_present",   0, 1),
         BitField    ("frame_count_present",     0, 1),
-        BitEnumField("frame_signature_type",    FrameSignatureType.UNSPECIFIED, 3, FRAME_SIGNATURE_TYPES),
+        BitEnumField("frame_signature_type",    FrameSignatureType.HLSA, 3, FRAME_SIGNATURE_TYPES),
         BitField    ("reserved",                0, 2),
         
         FieldLenField("uri_len", None, length_of="uri", fmt="B"),
