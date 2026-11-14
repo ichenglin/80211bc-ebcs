@@ -13,7 +13,7 @@ cp .env.example .env
 
 ## Monitor Mode
 
-Monitor mode disables the association requirement entirely, and allows the wireless interface to listen and inject raw frames directly onto the radio frequency channel. Both the interfaces used by the device and station should be configured in monitor mode.
+Monitor mode disables the association requirement entirely, and allows the wireless interface to listen and inject raw frames directly onto the radio frequency channel. Both device and station interfaces should be configured to monitor mode and the same channel.
 
 Check available wireless interfaces:
 ```bash
@@ -38,3 +38,12 @@ Filter packets by action value:
 ```text
 wlan.fixed.publicact == <0x33|0x34|0x35>
 ```
+
+## References
+
+Over-the-air MAC specification:
+- [802.11-2024](https://ieeexplore.ieee.org/document/10979691)
+- [802.11bc-2023](https://ieeexplore.ieee.org/document/10456575)
+
+Architectural concept of appending location metadata is inspired by the patent:
+- [WO2022232740](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2022232740)
