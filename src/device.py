@@ -23,7 +23,7 @@ def device_main() -> None:
         Dot11Action(category=ActionCategory.PUBLIC)   /
         BcBase     (action  =ActionValue.EBCS_UPLINK) /
         BcUplink(
-            uri                  =b"http://example.com",
+            uri                  =b"http://localhost:8080",
             hlp_payload          =b"Hello World!",
             frame_tx_time_present=1,
             frame_tx_time        =0x01020304
