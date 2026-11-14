@@ -7,3 +7,7 @@ class FrameSignatureType(IntEnum):
     RSASSA_PSS_4096 = 0x2
     ECDSA_P256      = 0x3
     ECDSA_P521      = 0x4
+
+class FieldPresent(IntEnum):
+    ABSENT  = 0x0
+    PRESENT = 0x1

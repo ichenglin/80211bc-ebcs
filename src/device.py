@@ -1,10 +1,12 @@
 import os
+import time
 
 from dotenv import load_dotenv
 from scapy.all import Dot11, Dot11Action, RadioTap, sendp
 
 from constants.base import ActionValue
 from constants.dot11 import ActionCategory, Dot11Type, ManagementSubtype
+from constants.uplink import FieldPresent
 from packets.base import BcBase
 from packets.uplink import BcUplink
 
@@ -25,8 +27,8 @@ def device_main() -> None:
         BcUplink(
             uri                  =b"http://localhost:8080",
             hlp_payload          =b"Hello World!",
-            frame_tx_time_present=1,
-            frame_tx_time        =0x01020304
+            frame_tx_time_present=FieldPresent.PRESENT,
+            frame_tx_time        =int(time.time())
         )
     )
 

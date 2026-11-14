@@ -13,7 +13,7 @@ from scapy.all import (
 )
 
 from constants.base import ActionValue
-from constants.uplink import FrameSignatureType
+from constants.uplink import FieldPresent, FrameSignatureType
 from packets.base import BcBase
 
 FRAME_SIGNATURE_TYPES = {
@@ -53,11 +53,11 @@ class BcUplink(BcBase):
     name = "EBCS Uplink"
     fields_desc: ClassVar[list] = [
         # control fields
-        BitField    ("sta_certificate_present", 0, 1),
-        BitField    ("frame_tx_time_present",   0, 1),
-        BitField    ("frame_count_present",     0, 1),
+        BitField    ("sta_certificate_present", FieldPresent.ABSENT,     1),
+        BitField    ("frame_tx_time_present",   FieldPresent.ABSENT,     1),
+        BitField    ("frame_count_present",     FieldPresent.ABSENT,     1),
         BitEnumField("frame_signature_type",    FrameSignatureType.HLSA, 3, FRAME_SIGNATURE_TYPES),
-        BitField    ("reserved",                0, 2),
+        BitField    ("reserved",                0,                       2),
         
         FieldLenField("uri_len", None, length_of="uri", fmt="B"),
         StrLenField  ("uri", b"http://example.com", length_from=lambda pkt: pkt.uri_len),
@@ -67,7 +67,7 @@ class BcUplink(BcBase):
 
         ConditionalField(
             FieldLenField("sta_certificate_len", None, length_of="sta_certificate", fmt="H"),
-            lambda pkt: pkt.sta_certificate_present == 1,
+            lambda pkt: pkt.sta_certificate_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             StrLenField(
@@ -75,15 +75,15 @@ class BcUplink(BcBase):
                 b"",
                 length_from=lambda pkt: pkt.sta_certificate_len,
             ),
-            lambda pkt: pkt.sta_certificate_present == 1,
+            lambda pkt: pkt.sta_certificate_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             IntField("frame_tx_time", 0),
-            lambda pkt: pkt.frame_tx_time_present == 1,
+            lambda pkt: pkt.frame_tx_time_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             FrameCountField("frame_count", 0),
-            lambda pkt: pkt.frame_count_present == 1,
+            lambda pkt: pkt.frame_count_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             FieldLenField("frame_signature_len", None, length_of="frame_signature", fmt="H"),

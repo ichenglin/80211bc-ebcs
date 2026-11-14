@@ -8,6 +8,9 @@ from packets.record import UplinkRecord
 from packets.uplink import BcUplink
 
 
+def report_station_listen() -> None:
+    print("[*] Listening for EBCS uplink frames...")
+
 def report_station_sniff(packet: BcUplink) -> None:
     dot11  = packet[Dot11]
     base   = packet[BcBase]

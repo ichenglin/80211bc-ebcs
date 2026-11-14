@@ -6,7 +6,11 @@ from dotenv import load_dotenv
 from scapy.all import IP, TCP, Packet, send, sniff
 
 from constants.metadata import MetadataType
-from modules.report import report_station_forward, report_station_sniff
+from modules.report import (
+    report_station_forward,
+    report_station_listen,
+    report_station_sniff,
+)
 from packets.metadata import UplinkMetadata
 from packets.record import UplinkRecord
 from packets.uplink import BcUplink
@@ -14,7 +18,7 @@ from packets.uplink import BcUplink
 load_dotenv()
 
 def station_main() -> None:
-    print("[*] Listening for EBCS uplink frames...")
+    report_station_listen()
     sniff(iface=os.getenv("STATION_INTERFACE"), prn=station_sniff, store=0)
 
 def station_sniff(packet: Packet) -> None:
@@ -28,16 +32,23 @@ def station_forward(packet: BcUplink) -> None:
     ip, port = station_url(packet)
     metadata = [
         UplinkMetadata(
-            meta_type=MetadataType.LOCATION,
+            meta_type =MetadataType.LOCATION,
             meta_value=os.getenv("STATION_LOCATION")
         )
     ]
+    if packet.frame_tx_time_present:
+        metadata.append(
+            UplinkMetadata(
+                meta_type =MetadataType.TX_TIME,
+                meta_value=str(packet.frame_tx_time)
+            )
+        )
     packet = (
         IP (dst  =ip) / 
         TCP(dport=port, flags="PA") /
         UplinkRecord(
             metadata_list=metadata,
-            hlp_payload=packet.hlp_payload
+            hlp_payload  =packet.hlp_payload
         )
     )
     report_station_forward(packet)
