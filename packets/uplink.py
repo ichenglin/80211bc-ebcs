@@ -53,12 +53,11 @@ class BcUplink(BcBase):
 
     name = "EBCS Uplink"
     fields_desc: ClassVar[list] = [
-        # control fields
         BitField    ("sta_certificate_present", FieldPresent.ABSENT,     1),
         BitField    ("frame_tx_time_present",   FieldPresent.ABSENT,     1),
         BitField    ("frame_count_present",     FieldPresent.ABSENT,     1),
         BitEnumField("frame_signature_type",    FrameSignatureType.HLSA, 3, FRAME_SIGNATURE_TYPES),
-        BitField    ("reserved",                0,                       2),
+        BitField    ("reserved",                0x0,                     2),
         
         FieldLenField("uri_len", None, length_of="uri", fmt=FieldFormat.UINT8),
         StrLenField  ("uri",     b"",  length_from=lambda packet: packet.uri_len),
