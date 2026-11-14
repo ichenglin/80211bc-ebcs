@@ -27,7 +27,10 @@ def station_sniff(packet: Packet) -> None:
         station_forward(packet)
 
 def station_forward(packet: BcUplink) -> None:
-    if (os.getenv("FORWARD_ENABLED", "false").lower() != "true"):
+    location  = os.getenv("STATION_LOCATION")
+    interface = os.getenv("FORWARD_INTERFACE")
+    enabled   = (os.getenv("FORWARD_ENABLED", "false").lower() == "true")
+    if (not enabled):
         return
     uri = station_uri(packet)
     if not uri:
@@ -35,7 +38,7 @@ def station_forward(packet: BcUplink) -> None:
     metadata = [
         UplinkMetadata(
             meta_type =MetadataType.LOCATION,
-            meta_value=os.getenv("STATION_LOCATION")
+            meta_value=location
         )
     ]
     if packet.frame_tx_time_present:
@@ -54,7 +57,7 @@ def station_forward(packet: BcUplink) -> None:
         )
     )
     report_station_forward(packet)
-    send(packet, iface=os.getenv("FORWARD_INTERFACE"), verbose=False)
+    send(packet, iface=interface, verbose=False)
 
 def station_uri(packet: BcUplink) -> tuple[str, int] | None:
     url  = urlparse(f"//{packet.uri.decode('utf-8', errors='ignore')}")

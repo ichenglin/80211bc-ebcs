@@ -11,14 +11,16 @@ load_dotenv()
 
 def destination_main() -> None:
     interface = os.getenv("DESTINATION_INTERFACE")
+    ip        = os.getenv("DESTINATION_IP")
+    port      = int(os.getenv("DESTINATION_PORT"))
     report_destination_listen(interface)
     sniff(
         iface  =interface,
         prn    =destination_sniff,
         store  =0,
         lfilter=(lambda packet: (
-            packet.haslayer(IP)  and packet[IP].dst    ==     os.getenv("DESTINATION_IP") and
-            packet.haslayer(TCP) and packet[TCP].dport == int(os.getenv("DESTINATION_PORT"))
+            packet.haslayer(IP)  and packet[IP].dst    == ip and
+            packet.haslayer(TCP) and packet[TCP].dport == port
         ))
     )
 

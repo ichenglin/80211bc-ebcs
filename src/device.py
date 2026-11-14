@@ -13,27 +13,28 @@ from packets.uplink import BcUplink
 load_dotenv()
 
 def device_main() -> None:
-    frame = (
+    interface = os.getenv("DEVICE_INTERFACE")
+    mac       = os.getenv("DEVICE_MAC")
+    frame     = (
         RadioTap() /
         Dot11(
             type   =Dot11Type.MANAGEMENT,
             subtype=ManagementSubtype.ACTION,
-            addr1  ="ff:ff:ff:ff:ff:ff",     # group address
-            addr2  =os.getenv("DEVICE_MAC"), # sender STA mac
-            addr3  ="01:0f:ac:01:02:03"      # EBCS content mac address
+            addr1  ="ff:ff:ff:ff:ff:ff", # group address
+            addr2  =mac,                 # sender STA mac
+            addr3  ="01:0f:ac:01:02:03"  # EBCS content mac address
         ) /
         Dot11Action(category=ActionCategory.PUBLIC)   /
         BcBase     (action  =ActionValue.EBCS_UPLINK) /
         BcUplink(
             uri                  =b"localhost:1112",
-            hlp_payload          =f"Hello World from {os.getenv('DEVICE_MAC')}",
+            hlp_payload          =f"Hello World from {mac}",
             frame_tx_time_present=FieldPresent.PRESENT,
             frame_tx_time        =int(time.time())
         )
     )
-
     frame.show()
-    sendp(frame, iface=os.getenv("DEVICE_INTERFACE"), verbose=False)
+    sendp(frame, iface=interface, verbose=False)
 
 if __name__ == "__main__":
     device_main()
