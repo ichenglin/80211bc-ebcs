@@ -13,6 +13,7 @@ from scapy.all import (
 )
 
 from constants.base import ActionValue
+from constants.field import FieldFormat
 from constants.uplink import FieldPresent, FrameSignatureType
 from packets.base import BcBase
 
@@ -59,14 +60,14 @@ class BcUplink(BcBase):
         BitEnumField("frame_signature_type",    FrameSignatureType.HLSA, 3, FRAME_SIGNATURE_TYPES),
         BitField    ("reserved",                0,                       2),
         
-        FieldLenField("uri_len", None, length_of="uri", fmt="B"),
+        FieldLenField("uri_len", None, length_of="uri", fmt=FieldFormat.UINT8),
         StrLenField  ("uri",     b"",  length_from=lambda packet: packet.uri_len),
         
-        FieldLenField("payload_len", None, length_of="hlp_payload", fmt="H"),
+        FieldLenField("payload_len", None, length_of="hlp_payload", fmt=FieldFormat.UINT16),
         StrLenField  ("hlp_payload", b"",  length_from=lambda packet: packet.payload_len),
 
         ConditionalField(
-            FieldLenField("sta_certificate_len", None, length_of="sta_certificate", fmt="H"),
+            FieldLenField("sta_certificate_len", None, length_of="sta_certificate", fmt=FieldFormat.UINT16),
             lambda packet: packet.sta_certificate_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
@@ -86,7 +87,7 @@ class BcUplink(BcBase):
             lambda packet: packet.frame_count_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
-            FieldLenField("frame_signature_len", None, length_of="frame_signature", fmt="H"),
+            FieldLenField("frame_signature_len", None, length_of="frame_signature", fmt=FieldFormat.UINT16),
             lambda packet: packet.frame_signature_type != FrameSignatureType.HLSA,
         ),
         ConditionalField(
