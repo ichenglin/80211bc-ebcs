@@ -26,7 +26,7 @@ def device_main() -> None:
         BcBase     (action  =ActionValue.EBCS_UPLINK) /
         BcUplink(
             uri                  =b"http://localhost:8080",
-            hlp_payload          =b"Hello World!",
+            hlp_payload          =f"Hello World from {os.getenv('DEVICE_MAC')}",
             frame_tx_time_present=FieldPresent.PRESENT,
             frame_tx_time        =int(time.time())
         )

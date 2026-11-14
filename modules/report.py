@@ -9,13 +9,14 @@ from packets.uplink import BcUplink
 
 
 def report_station_listen() -> None:
-    print("[*] Listening for EBCS uplink frames...")
+    print("[*] Listening for EBCS Uplink Frames...")
 
 def report_station_sniff(packet: BcUplink) -> None:
     dot11  = packet[Dot11]
     base   = packet[BcBase]
     uplink = packet[BcUplink]
-    print(f"\n[+] Captured EBCS Frame from MAC: {dot11.addr2}")
+    print("\n[+] Captured Uplink Packet")
+    report_line("MAC",                  dot11.addr2,                                 True)
     report_line("Action",               f"{ActionValue(base.action).name}",          True)
     report_line("URI",                  uplink.uri.decode("utf-8", errors="ignore"), True)
     report_line("Payload",              uplink.hlp_payload,                          True)
@@ -29,7 +30,7 @@ def report_station_forward(packet: UplinkRecord) -> None:
     ip     = packet[IP]
     tcp    = packet[TCP]
     record = packet[UplinkRecord]
-    print("\n[+] Forwarding packet")
+    print("\n[+] Forwarded Uplink Packet")
     report_line("IP",      ip.dst,             True)
     report_line("Port",    tcp.dport,          True)
     report_line("Payload", record.hlp_payload, True)
