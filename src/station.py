@@ -29,7 +29,9 @@ def station_sniff(packet: Packet) -> None:
 def station_forward(packet: BcUplink) -> None:
     if (os.getenv("FORWARD_ENABLED", "false").lower() != "true"):
         return
-    ip, port = station_url(packet)
+    uri = station_uri(packet)
+    if not uri:
+        return
     metadata = [
         UplinkMetadata(
             meta_type =MetadataType.LOCATION,
@@ -44,8 +46,8 @@ def station_forward(packet: BcUplink) -> None:
             )
         )
     packet = (
-        IP (dst  =ip) / 
-        TCP(dport=port, flags="PA") /
+        IP (dst  =uri[0]) / 
+        TCP(dport=uri[1], flags="PA") /
         UplinkRecord(
             metadata_list=metadata,
             hlp_payload  =packet.hlp_payload
@@ -54,11 +56,13 @@ def station_forward(packet: BcUplink) -> None:
     report_station_forward(packet)
     send(packet, iface=os.getenv("FORWARD_INTERFACE"), verbose=False)
 
-def station_url(packet: BcUplink) -> tuple[str, int]:
-    url  = urlparse(packet.uri.decode("utf-8", errors="ignore"))
+def station_uri(packet: BcUplink) -> tuple[str, int] | None:
+    url  = urlparse(f"//{packet.uri.decode('utf-8', errors='ignore')}")
     host = url.hostname
-    port = url.port or (443 if url.scheme == 'https' else 80)
-    ip   = socket.gethostbyname(host)
+    port = url.port
+    if ((not host) or (not port)):
+        return None
+    ip = socket.gethostbyname(host)
     return ip, port
 
 if __name__ == "__main__":

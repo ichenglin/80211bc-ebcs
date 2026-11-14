@@ -25,7 +25,7 @@ def device_main() -> None:
         Dot11Action(category=ActionCategory.PUBLIC)   /
         BcBase     (action  =ActionValue.EBCS_UPLINK) /
         BcUplink(
-            uri                  =b"http://localhost",
+            uri                  =b"localhost:1112",
             hlp_payload          =f"Hello World from {os.getenv('DEVICE_MAC')}",
             frame_tx_time_present=FieldPresent.PRESENT,
             frame_tx_time        =int(time.time())
