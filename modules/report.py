@@ -11,8 +11,10 @@ from packets.uplink import BcUplink
 def report_station_listen() -> None:
     print("[*] Listening for EBCS Uplink Frames...")
 
-def report_destination_listen() -> None:
+def report_destination_listen(interface: str) -> None:
     print("[*] Listening for Uplink Records...")
+    if (interface == "lo"):
+        print(f"{' ' * 4}NOTE: Listening on loopback interface may result in duplicate packet captures")
 
 def report_station_sniff(packet: BcUplink) -> None:
     dot11  = packet[Dot11]

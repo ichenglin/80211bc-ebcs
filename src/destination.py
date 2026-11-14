@@ -10,9 +10,10 @@ from packets.record import UplinkRecord
 load_dotenv()
 
 def destination_main() -> None:
-    report_destination_listen()
+    interface = os.getenv("DESTINATION_INTERFACE")
+    report_destination_listen(interface)
     sniff(
-        iface  =os.getenv("DESTINATION_INTERFACE"),
+        iface  =interface,
         prn    =destination_sniff,
         store  =0,
         lfilter=(lambda packet: (
