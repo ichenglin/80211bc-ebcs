@@ -60,42 +60,42 @@ class BcUplink(BcBase):
         BitField    ("reserved",                0,                       2),
         
         FieldLenField("uri_len", None, length_of="uri", fmt="B"),
-        StrLenField  ("uri", b"http://example.com", length_from=lambda pkt: pkt.uri_len),
+        StrLenField  ("uri",     b"",  length_from=lambda packet: packet.uri_len),
         
         FieldLenField("payload_len", None, length_of="hlp_payload", fmt="H"),
-        StrLenField  ("hlp_payload", b"", length_from=lambda pkt: pkt.payload_len),
+        StrLenField  ("hlp_payload", b"",  length_from=lambda packet: packet.payload_len),
 
         ConditionalField(
             FieldLenField("sta_certificate_len", None, length_of="sta_certificate", fmt="H"),
-            lambda pkt: pkt.sta_certificate_present == FieldPresent.PRESENT,
+            lambda packet: packet.sta_certificate_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             StrLenField(
                 "sta_certificate",
                 b"",
-                length_from=lambda pkt: pkt.sta_certificate_len,
+                length_from=lambda packet: packet.sta_certificate_len,
             ),
-            lambda pkt: pkt.sta_certificate_present == FieldPresent.PRESENT,
+            lambda packet: packet.sta_certificate_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             IntField("frame_tx_time", 0),
-            lambda pkt: pkt.frame_tx_time_present == FieldPresent.PRESENT,
+            lambda packet: packet.frame_tx_time_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             FrameCountField("frame_count", 0),
-            lambda pkt: pkt.frame_count_present == FieldPresent.PRESENT,
+            lambda packet: packet.frame_count_present == FieldPresent.PRESENT,
         ),
         ConditionalField(
             FieldLenField("frame_signature_len", None, length_of="frame_signature", fmt="H"),
-            lambda pkt: pkt.frame_signature_type != FrameSignatureType.HLSA,
+            lambda packet: packet.frame_signature_type != FrameSignatureType.HLSA,
         ),
         ConditionalField(
             StrLenField(
                 "frame_signature",
                 b"",
-                length_from=lambda pkt: pkt.frame_signature_len,
+                length_from=lambda packet: packet.frame_signature_len,
             ),
-            lambda pkt: pkt.frame_signature_type != FrameSignatureType.HLSA,
+            lambda packet: packet.frame_signature_type != FrameSignatureType.HLSA,
         ),
     ]
 
