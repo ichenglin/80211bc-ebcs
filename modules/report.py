@@ -11,6 +11,9 @@ from packets.uplink import BcUplink
 def report_station_listen() -> None:
     print("[*] Listening for EBCS Uplink Frames...")
 
+def report_destination_listen() -> None:
+    print("[*] Listening for Uplink Records...")
+
 def report_station_sniff(packet: BcUplink) -> None:
     dot11  = packet[Dot11]
     base   = packet[BcBase]
@@ -31,6 +34,22 @@ def report_station_forward(packet: UplinkRecord) -> None:
     tcp    = packet[TCP]
     record = packet[UplinkRecord]
     print("\n[+] Forwarded Uplink Packet")
+    report_line("IP",      ip.dst,             True)
+    report_line("Port",    tcp.dport,          True)
+    report_line("Payload", record.hlp_payload, True)
+    for metadata in record.metadata_list:
+        report_line(
+            MetadataType(metadata.meta_type).name,
+            metadata.meta_value,
+            True,
+            depth=2
+        )
+
+def report_destination_sniff(packet: UplinkRecord) -> None:
+    ip     = packet[IP]
+    tcp    = packet[TCP]
+    record = packet[UplinkRecord]
+    print("\n[+] Captured Uplink Record")
     report_line("IP",      ip.dst,             True)
     report_line("Port",    tcp.dport,          True)
     report_line("Payload", record.hlp_payload, True)

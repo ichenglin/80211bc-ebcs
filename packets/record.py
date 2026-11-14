@@ -12,7 +12,7 @@ class UplinkRecord(Packet):
         FieldLenField  ("metadata_count",  None, count_of="metadata_list", fmt="B"),
         PacketListField("metadata_list",   [],   UplinkMetadata, count_from=lambda pkt: pkt.metadata_count),
         FieldLenField  ("hlp_payload_len", None, length_of="hlp_payload", fmt="H"),
-        StrLenField    ("hlp_payload",     "",   length_from=lambda pkt: pkt.hlp_payload_len)
+        StrLenField    ("hlp_payload",     b"",  length_from=lambda pkt: pkt.hlp_payload_len)
     ]
 
 bind_layers(TCP, UplinkRecord)
