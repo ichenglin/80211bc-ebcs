@@ -3,6 +3,8 @@
 ![Architecture](/assets/architecture_dark.png#gh-dark-mode-only)
 ![Architecture](/assets/architecture_light.png#gh-light-mode-only)
 
+*Adapted from "Associating Devices with Access Points Using Credentials," [WO/2022/232740](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2022232740), published November 3, 2022, with modifications to reflect the architecture of the project.*
+
 ## Setup Environment
 
 Setup python virtual environment and install dependencies:
