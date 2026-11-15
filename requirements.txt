@@ -1,2 +1,5 @@
+cffi==2.1.1
+cryptography==50.0.2
+pycparser==3.12
 python-dotenv==1.2.4
 scapy==2.8.0
