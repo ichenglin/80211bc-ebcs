@@ -45,5 +45,5 @@ Over-the-air MAC specification:
 - [802.11-2024](https://ieeexplore.ieee.org/document/10979691)
 - [802.11bc-2023](https://ieeexplore.ieee.org/document/10456575)
 
-Architectural concept of appending location metadata is inspired by the patent:
-- [WO2022232740](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2022232740)
+Architectural concept of appending location metadata is inspired by this patent from Qualcomm:
+- [WO/2022/232740](https://patentscope.wipo.int/search/en/detail.jsf?docId=WO2022232740)
