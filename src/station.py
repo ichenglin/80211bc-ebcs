@@ -1,5 +1,6 @@
 import os
 import socket
+from collections.abc import Callable
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
@@ -35,21 +36,13 @@ def station_forward(packet: BcUplink) -> None:
     uri = station_uri(packet)
     if not uri:
         return
-    metadata = [
-        UplinkMetadata(
-            meta_type =MetadataType.LOCATION,
-            meta_value=location
-        )
-    ]
-    if packet.frame_tx_time_present:
-        metadata.append(
-            UplinkMetadata(
-                meta_type =MetadataType.TX_TIME,
-                meta_value=str(packet.frame_tx_time)
-            )
-        )
+    metadata = []
+    station_metadata(metadata, MetadataType.TX_TIME,   lambda: packet.frame_tx_time.to_bytes(4, byteorder="big"), packet.frame_tx_time_present)
+    station_metadata(metadata, MetadataType.COUNT,     lambda: packet.frame_count  .to_bytes(6, byteorder="big"), packet.frame_count_present)
+    station_metadata(metadata, MetadataType.SIGNATURE, lambda: packet.frame_signature,                            True)
+    station_metadata(metadata, MetadataType.LOCATION,  lambda: location,                                          True)
     packet = (
-        IP (dst  =uri[0]) / 
+        IP (dst  =uri[0]) /
         TCP(dport=uri[1], flags="PA") /
         UplinkRecord(
             metadata_list=metadata,
@@ -67,6 +60,11 @@ def station_uri(packet: BcUplink) -> tuple[str, int] | None:
         return None
     ip = socket.gethostbyname(host)
     return ip, port
+
+def station_metadata(metadata: list[UplinkMetadata], type: MetadataType, value: Callable[[], bytes], present: bool) -> None:
+    if (not present):
+        return
+    metadata.append(UplinkMetadata(meta_type=type, meta_value=value()))
 
 if __name__ == "__main__":
     station_main()

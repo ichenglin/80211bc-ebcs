@@ -6,7 +6,7 @@ from scapy.all import Dot11, Dot11Action, RadioTap, sendp
 
 from constants.base import ActionValue
 from constants.dot11 import ActionCategory, Dot11Type, ManagementSubtype
-from constants.uplink import FieldPresent
+from constants.uplink import FieldPresent, FrameSignatureType
 from packets.base import BcBase
 from packets.uplink import BcUplink
 
@@ -30,7 +30,11 @@ def device_main() -> None:
             uri                  =b"localhost:1112",
             hlp_payload          =f"Hello World from {mac}",
             frame_tx_time_present=FieldPresent.PRESENT,
-            frame_tx_time        =int(time.time())
+            frame_tx_time        =int(time.time()),
+            frame_count_present  =FieldPresent.PRESENT,
+            frame_count          =1,
+            frame_signature_type =FrameSignatureType.ECDSA_P256,
+            frame_signature      =b"Signature"
         )
     )
     frame.show()

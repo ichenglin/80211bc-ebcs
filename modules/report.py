@@ -67,4 +67,4 @@ def report_line(name: str, value: str, condition: bool, depth: int = 1) -> None:
     if (not condition):
         return
     offset = 4 * depth
-    print(f"{' ' * offset}- {name:<{24 - offset}}: {value}")
+    print(f"{' ' * offset}- {name:<{25 - offset}}: {value}")
