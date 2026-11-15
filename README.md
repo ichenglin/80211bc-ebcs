@@ -1,3 +1,8 @@
+# 802.11bc Uplink Implementation with Location Metadata
+
+![Architecture](/assets/architecture_dark.png#gh-dark-mode-only)
+![Architecture](/assets/architecture_light.png#gh-light-mode-only)
+
 ## Setup Environment
 
 Setup python virtual environment and install dependencies:
