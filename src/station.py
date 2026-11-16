@@ -4,9 +4,10 @@ from collections.abc import Callable
 from urllib.parse import urlparse
 
 from dotenv import load_dotenv
-from scapy.all import IP, TCP, Packet, send, sniff
+from scapy.all import IP, TCP, Dot11, Packet, send, sniff
 
 from constants.metadata import MetadataType
+from modules.address import mac_bc
 from modules.report import (
     report_station_forward,
     report_station_listen,
@@ -23,9 +24,16 @@ def station_main() -> None:
     sniff(iface=os.getenv("STATION_INTERFACE"), prn=station_sniff, store=0)
 
 def station_sniff(packet: Packet) -> None:
-    if packet.haslayer(BcUplink):
-        report_station_sniff(packet)
-        station_forward(packet)
+    if (not packet.haslayer(Dot11)):
+        return
+    if (not packet[Dot11].addr3):
+        return
+    if (not mac_bc(packet[Dot11].addr3)):
+        return
+    if (not packet.haslayer(BcUplink)):
+        return
+    report_station_sniff(packet)
+    station_forward(packet)
 
 def station_forward(packet: BcUplink) -> None:
     location  = os.getenv("STATION_LOCATION")

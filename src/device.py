@@ -4,8 +4,8 @@ import time
 from dotenv import load_dotenv
 from scapy.all import Dot11, Dot11Action, RadioTap, sendp
 
-from constants.base import ActionValue
-from constants.dot11 import ActionCategory, Dot11Type, ManagementSubtype
+from constants.base import MAC_BC_HEADER, ActionValue
+from constants.dot11 import MAC_BROADCAST, ActionCategory, Dot11Type, ManagementSubtype
 from constants.uplink import FieldPresent, FrameSignatureType
 from packets.base import BcBase
 from packets.uplink import BcUplink
@@ -20,9 +20,9 @@ def device_main() -> None:
         Dot11(
             type   =Dot11Type.MANAGEMENT,
             subtype=ManagementSubtype.ACTION,
-            addr1  ="ff:ff:ff:ff:ff:ff", # group address
-            addr2  =mac,                 # sender STA mac
-            addr3  ="01:0f:ac:01:02:03"  # EBCS content mac address
+            addr1  =MAC_BROADCAST,              # group address
+            addr2  =mac,                        # sender STA mac
+            addr3  =f"{MAC_BC_HEADER}:01:02:03" # EBCS content mac address
         ) /
         Dot11Action(category=ActionCategory.PUBLIC)   /
         BcBase     (action  =ActionValue.EBCS_UPLINK) /

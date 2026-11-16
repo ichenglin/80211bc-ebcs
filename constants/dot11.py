@@ -1,5 +1,6 @@
 from enum import IntEnum
 
+MAC_BROADCAST = "FF:FF:FF:FF:FF:FF"
 
 class Dot11Type(IntEnum):
     MANAGEMENT = 0x0
