@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 from scapy.all import IP, TCP, Dot11, Packet, send, sniff
 
 from constants.metadata import MetadataType
-from modules.address import mac_bc
+from modules.mac import mac_bc
 from modules.report import (
     report_station_forward,
     report_station_listen,
@@ -24,13 +24,7 @@ def station_main() -> None:
     sniff(iface=os.getenv("STATION_INTERFACE"), prn=station_sniff, store=0)
 
 def station_sniff(packet: Packet) -> None:
-    if (not packet.haslayer(Dot11)):
-        return
-    if (not packet[Dot11].addr3):
-        return
-    if (not mac_bc(packet[Dot11].addr3)):
-        return
-    if (not packet.haslayer(BcUplink)):
+    if (not station_bc(packet)):
         return
     report_station_sniff(packet)
     station_forward(packet)
@@ -59,6 +53,19 @@ def station_forward(packet: BcUplink) -> None:
     )
     report_station_forward(packet)
     send(packet, iface=interface, verbose=False)
+
+def station_bc(packet: Packet) -> bool:
+    streams = os.getenv("STATION_STREAM").split(",")
+    if (not packet.haslayer(Dot11)):
+        return False
+    addr3 = packet[Dot11].addr3
+    if (not addr3):
+        return False
+    if (not mac_bc(addr3)):
+        return False
+    if (not packet.haslayer(BcUplink)):
+        return False
+    return (addr3[9:] in streams)
 
 def station_uri(packet: BcUplink) -> tuple[str, int] | None:
     url  = urlparse(f"//{packet.uri.decode('utf-8', errors='ignore')}")

@@ -1,6 +1,5 @@
 from enum import IntEnum
 
-MAC_BC_HEADER = "01:0F:AC"
 
 class ActionValue(IntEnum):
     EBCS_UPLINK      = 0x33
